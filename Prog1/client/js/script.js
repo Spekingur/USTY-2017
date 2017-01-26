@@ -2,7 +2,14 @@ class Shape {
 	constructor(x, y, color) {
 		this.x = x;
 		this.y = y;
+		this.endX = x;
+		this.endY = y;
 		this.color = color;
+	}
+	
+	setEnd(x, y) {
+		this.endX = x;
+		this.endY = y;
 	}
 }
 
@@ -13,25 +20,23 @@ class Rectangle extends Shape {
 	
 	draw(context) {
 		context.fillStyle = this.color;
-		context.fillRect(this.x, this.y, 40, 40);
+		context.fillRect(this.x, this.y, this.endX, this.endY);
 	}
 	
 }
-
 
 var settings = {
 	canvasObj: document.getElementById("myCanvas"),
 	nextObject: "Rectangle",
 	nextColor: "Black",
-	isDrawing: false
+	isDrawing: false,
+	currentShape: undefined,
+	shapes: []
 }
 
-function onchange_tool()
+function onchange_tool(val)
 {
-	/*nextObject = document.getElementById("dtool")[0];*/
-	var e = document.getElementById("dtool")[0];
-	nextObject = e;
-	/*alert("the value of the option here is "+e.value);*/
+	nextObject = val;
 }
 
 $("#myCanvas").on("mousedown", function(e) {
@@ -42,14 +47,23 @@ $("#myCanvas").on("mousedown", function(e) {
 	var context = settings.canvasObj.getContext("2d");
 	
 
-	var x = e.pageX - this.offsetLeft;
-	var y = e.pageY - this.offsetTop;
+	x = e.pageX - this.offsetLeft;
+	y = e.pageY - this.offsetTop;
+
 	
 	if(nextObject === "Rectangle") {
-		shape = new Rectangle(x - 30, y - 30, settings.nextColor)
+		shape = new Rectangle(x, y, settings.nextColor)
 	}
-	else if( nextObject === "Circle") {
+	else if(nextObject === "Circle") {
 		
+	}
+	else if(nextObject === "Pencil") {
+
+	}
+	
+	settings.currentShape = shape;
+	if(shape !== undefined){
+		settings.shapes.push(shape);
 	}
 	
 	shape.draw(context);
@@ -57,5 +71,17 @@ $("#myCanvas").on("mousedown", function(e) {
 });
 
 $("#myCanvas").on("mousemove", function(e) {
+	
+	if(settings.currentShape !== undefined) {
+		// TODO: update the end position of the current shape
+		settings.currentShape.setEnd(e.x - x, e.y - y/* TODO: Fix the position */);
+	}
+
+});
+
+$("#myCanvas").on("mouseup", function(e) {
+	
+	settings.currentShape = undefined;
+	settings.isDrawing = false;
 	
 });
