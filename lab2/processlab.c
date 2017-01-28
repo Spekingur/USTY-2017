@@ -5,6 +5,8 @@ Maciej Sierzputowski, maciej15@ru.is
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <stdlib.h>
 
 int main(int argc, char const *argv[]) {
     puts("----------------------------------");
@@ -15,35 +17,75 @@ int main(int argc, char const *argv[]) {
     puts("Maciej Sierzputowski, maciej15@ru.is");
     puts("");
 
+    /*TODO: delete unnessecary comments*/
+
+    puts("Starting program");
+
     int status = 0;
-    pid_t pid1 = fork();
-    printf("\tpid1: Starting process id: %i\n", pid1);
+    int fd[2];
+    int err = pipe(fd);
+    pid_t pid;
+    char buff[1024];
+
+    if (err == -1) {
+        perror("pipe error");
+        exit(EXIT_FAILURE);
+    }
+
+
+    /*pid_t pid1 = fork();
+    printf("\tfork: Starting: pid1: %i\n", pid1);
 
     puts("Starting program");
 
     pid_t pid2 = fork();
-    printf("\tpid2: Starting process id: %i\n", pid2);
+    printf("\tfork: Starting: pid2: %i\n", pid2);
 
     if(pid1 != 0) {
-        printf("\tpid1: Waiting for process id: %i\n", pid1);
+        printf("\twait: pid1: %i\n", pid1);
         waitpid(pid1, &status, 0);
-    }
+    }*/
 
     int numberOfLoops = 100000000; // 100 million
     int i; // for the for loop
     int totallyLooped = 0;
-    puts("Starting for-loop");
+    puts("\nStarting for-loop");
     for (i = 0; i < numberOfLoops; i++) {
         totallyLooped++;
     }
-    printf("Finished running for-loop %i times\n", totallyLooped);
+    printf("\nFinished running for-loop %i times\n", totallyLooped);
 
-    if(pid2 != 0) {
-        printf("\tpid2: Waiting for process id: %i\n", pid2);
+    /*if(pid2 != 0) {
+        printf("\twait: pid2: %i\n", pid2);
         waitpid(pid1, &status, 0);
+    }*/
+
+    pid = fork();
+
+    if (pid == -1) {
+        perror("fork error");
+        exit(EXIT_FAILURE);
     }
 
+    if(pid == 0) { //child
+        close(fd[1]);
+        dup2(fd[0], STDIN_FILENO); //standard input
+        puts("test");
+        
+    }
+    else { //parent
+        close(fd[0]);
+        dup2(fd[1], STDOUT_FILENO); //standard output
+        fgets(buff, sizeof(buff), stdin);
+        puts(buff);
+    }
+    /*puts(buff);*/ //testing values
     puts("Ending program");
+
+    /*puts("");
+    puts("Executing secondary program");
+    puts("---------------------------");
+    execl("./dirlst", "./dirlst", (char*)NULL);*/
 
     /*if(pid1 != 0) {
         waitpid(pid1, &status, 0);
