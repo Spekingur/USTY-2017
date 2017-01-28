@@ -17,7 +17,10 @@ int main(int argc, char const *argv[]) {
     puts("Maciej Sierzputowski, maciej15@ru.is");
     puts("");
 
-    /*TODO: delete unnessecary comments*/
+    /*TODO:
+    add this just in from child to parent output
+    detect EOF and call wait
+    delete unnessecary comments*/
 
     puts("Starting program");
 
@@ -25,7 +28,7 @@ int main(int argc, char const *argv[]) {
     int fd[2];
     int err = pipe(fd);
     pid_t pid;
-    char buff[1024];
+    char buff[100];
 
     if (err == -1) {
         perror("pipe error");
@@ -70,14 +73,17 @@ int main(int argc, char const *argv[]) {
     if(pid == 0) { //child
         close(fd[1]);
         dup2(fd[0], STDIN_FILENO); //standard input
-        puts("test");
-        
+        execl("./dirlst", "./dirlst", (char*)NULL);
+        close(fd[0]);
+        _exit(EXIT_SUCCESS);
     }
     else { //parent
         close(fd[0]);
         dup2(fd[1], STDOUT_FILENO); //standard output
         fgets(buff, sizeof(buff), stdin);
-        puts(buff);
+        printf("%s\n", buff);
+        close(fd[1]);
+        wait(NULL);
     }
     /*puts(buff);*/ //testing values
     puts("Ending program");
