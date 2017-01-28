@@ -17,15 +17,15 @@ int main(int argc, char const *argv[]) {
 
     int status = 0;
     pid_t pid1 = fork();
-    printf("Starting fork #1, process id: %i\n", pid1);
+    printf("\tpid1: Starting process id: %i\n", pid1);
 
     puts("Starting program");
 
     pid_t pid2 = fork();
-    printf("Starting fork #2, process id: %i\n", pid2);
+    printf("\tpid2: Starting process id: %i\n", pid2);
 
     if(pid1 != 0) {
-        printf("pid1: Waiting for process id: %i\n", pid1);
+        printf("\tpid1: Waiting for process id: %i\n", pid1);
         waitpid(pid1, &status, 0);
     }
 
@@ -39,7 +39,7 @@ int main(int argc, char const *argv[]) {
     printf("Finished running for-loop %i times\n", totallyLooped);
 
     if(pid2 != 0) {
-        printf("pid2: Waiting for process id: %i\n", pid2);
+        printf("\tpid2: Waiting for process id: %i\n", pid2);
         waitpid(pid1, &status, 0);
     }
 
