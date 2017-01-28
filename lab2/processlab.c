@@ -15,8 +15,19 @@ int main(int argc, char const *argv[]) {
     puts("Maciej Sierzputowski, maciej15@ru.is");
     puts("");
 
+    int status = 0;
+    pid_t pid1 = fork();
+    printf("Starting fork #1, process id: %i\n", pid1);
+
     puts("Starting program");
 
+    pid_t pid2 = fork();
+    printf("Starting fork #2, process id: %i\n", pid2);
+
+    if(pid1 != 0) {
+        printf("pid1: Waiting for process id: %i\n", pid1);
+        waitpid(pid1, &status, 0);
+    }
 
     int numberOfLoops = 100000000; // 100 million
     int i; // for the for loop
@@ -26,7 +37,18 @@ int main(int argc, char const *argv[]) {
         totallyLooped++;
     }
     printf("Finished running for-loop %i times\n", totallyLooped);
+
+    if(pid2 != 0) {
+        printf("pid2: Waiting for process id: %i\n", pid2);
+        waitpid(pid1, &status, 0);
+    }
+
     puts("Ending program");
+
+    /*if(pid1 != 0) {
+        waitpid(pid1, &status, 0);
+    }*/
+
 
     /* For fun purposes, misunderstanding of first part of program */
     /*if (strcmp(argv[1], "story") == 0) {
