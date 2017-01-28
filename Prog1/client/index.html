@@ -4,7 +4,8 @@
 <body>
 
 	<label>Drawing tool:
-	<select id="dtool" onchange = "onchange_tool();">
+	<select id="dtool" onchange="onchange_tool(this.value)";>
+		<option value="Nothing"> </option>
 		<option value="Rectangle">Rectangle</option>
 		<option value="Pencil">Pencil</option>
 	</select>
