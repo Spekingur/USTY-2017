@@ -26,6 +26,8 @@ public class ElevatorScene {
 									//if it suits you
 	ArrayList<Integer> exitedCount = null;
 	public static Semaphore exitedCountMutex;
+	
+	ArrayList<Integer> elevatorCount;
 
 	//Base function: definition must not change
 	//Necessary to add your code in this one
@@ -60,6 +62,11 @@ public class ElevatorScene {
 			this.exitedCount.add(0);
 		}
 		exitedCountMutex = new Semaphore(1);
+		
+		elevatorCount = new ArrayList<Integer>();
+		for(int i = 0; i < getNumberOfElevators(); i++) {
+			this.elevatorCount.add(0);
+		}
 	}
 
 	//Base function: definition must not change
