@@ -1,6 +1,8 @@
 package com.ru.usty.scheduling;
 
 import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.ru.usty.scheduling.process.ProcessExecution;
 
@@ -10,10 +12,11 @@ public class Scheduler {
 	Policy policy;
 	int quantum;
 	Stack<Integer> stk = new Stack();
+	Timer timer = new Timer();
+	Timer timer2 = new Timer();
+	int stkAt;
+	boolean timerSet;	
 
-	/**
-	 * Add any objects and variables here (if needed)
-	 */
 
 
 	/**
@@ -46,7 +49,13 @@ public class Scheduler {
 			break;
 		case RR:	//Round robin
 			System.out.println("Starting new scheduling task: Round robin, quantum = " + quantum);
-			stk = null;
+			
+	        timer.cancel();
+	        timer = new Timer();
+			timerSet = false;
+			
+			stk = new Stack();
+			stkAt = 0;
 			
 			break;
 		case SPN:	//Shortest process next
@@ -97,9 +106,39 @@ public class Scheduler {
 		
 		if(this.policy.equals(policy.RR))
 		{
-			
+			stk.push(processID);
+			if(timerSet == false)
+			{
+				timerSet = true;
+				timer.scheduleAtFixedRate(new TimerTask() {
+					@Override
+					public void run() {
+						if(stkAt+1 >= stk.size())
+							stkAt = 0;
+						else if(stk.elementAt(stkAt) == 0)
+						{
+						 while(stk.elementAt(stkAt) == 0)
+							{
+								if(stk.size() == 0)
+									break;
+								else if(stkAt+1 >= stk.size())
+								{
+									stkAt = 0;
+									break;
+								}
+								else
+									stkAt++;	
+							}
+						}
+						else
+							stkAt++;
+						
+					processExecution.switchToProcess(stk.indexOf(stkAt));
+					}
+				}, 230, quantum);
+				
+			}
 		}
-		
 	}
 
 	/**
@@ -118,7 +157,7 @@ public class Scheduler {
 		
 		if(this.policy.equals(policy.RR))
 		{
-			
+			stk.set(stkAt, 0);
 		}
 		
 	}
