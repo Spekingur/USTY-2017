@@ -210,8 +210,24 @@ public class Scheduler {
 				}
 				else
 				{
-					System.out.println("adding last");
-					queue.add(processID);
+					queue.addLast(processID);
+					//queue.add(1, processID);
+					/*boolean added = false;
+					for(int i = 1; i < queue.size(); i++)
+					{
+						if(processExecution.getProcessInfo(processID).totalServiceTime < (processExecution.getProcessInfo(queue.get(i)).totalServiceTime - processExecution.getProcessInfo(queue.get(i)).elapsedExecutionTime))
+						{
+							queue.add(i, processID);
+							break;
+						}
+					}
+					
+					if(!added)
+					{
+						queue.addLast(processID);
+					}*/
+					//System.out.println("adding last");
+					//queue.add(processID);
 				}
 				//boolean added = false;
 				
@@ -279,10 +295,10 @@ public class Scheduler {
 		if(this.policy.equals(Policy.SRT))
 		{
 			int removed = queue.remove();
-			System.out.println("removed: " + removed);
+			//System.out.println("removed: " + removed);
 			if(!queue.isEmpty())
 			{
-				System.out.println("First element after removing is: " + queue.element());
+				//System.out.println("First element after removing is: " + queue.element());
 				processExecution.switchToProcess(queue.element());
 			}
 		}
