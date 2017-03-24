@@ -209,8 +209,9 @@ public class Scheduler {
 				}
 				else
 				{
+					
 					//queue.addLast(processID);
-					queue.add(1, processID);
+					//queue.add(1, processID);
 					//queue.add(1, processID);
 					/*boolean added = false;
 					for(int i = 1; i < queue.size(); i++)
