@@ -192,26 +192,29 @@ public class Scheduler {
 		{
 			// Since the queue is empty we can add a process to it without checking execution and service times
 			//if(queue.isEmpty())
+			//System.out.println(processExecution.getProcessInfo(processID).totalServiceTime);
 			if(queue.size() < 1)
 			{
-				System.out.println(queue.isEmpty());
+				//System.out.println(queue.isEmpty());
 				queue.add(processID);
+				processExecution.switchToProcess(queue.element());
 			}
 			
 			//if(!queue.isEmpty())
 			else
 			{
-				System.out.println("First element is: " + queue.element());
-				System.out.println("processID being added: " + processID);
+				//System.out.println("First element is: " + queue.element());
+				//System.out.println("processID being added: " + processID);
 				if(processExecution.getProcessInfo(processID).totalServiceTime < (processExecution.getProcessInfo(queue.element()).totalServiceTime - processExecution.getProcessInfo(queue.element()).elapsedExecutionTime))
 				{
-					System.out.println("adding first");
+					//System.out.println("adding first");
 					queue.addFirst(processID);
-					System.out.println(queue.getFirst());
+					//System.out.println(queue.getFirst());
 				}
 				else
 				{
-					queue.addLast(processID);
+					//queue.addLast(processID);
+					queue.add(1, processID);
 					//queue.add(1, processID);
 					/*boolean added = false;
 					for(int i = 1; i < queue.size(); i++)
@@ -230,6 +233,7 @@ public class Scheduler {
 					//System.out.println("adding last");
 					//queue.add(processID);
 				}
+				processExecution.switchToProcess(queue.element());
 				//boolean added = false;
 				
 				// we check if the new process has a shorter service time than current processes in the queue 
@@ -259,7 +263,6 @@ public class Scheduler {
 				}*/
 				
 				// we start the process that is first in the queue
-				processExecution.switchToProcess(queue.element());
 			}
 			
 		}
