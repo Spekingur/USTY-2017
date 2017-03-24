@@ -66,10 +66,9 @@ public class Scheduler {
 		case SPN:	//Shortest process next
 			System.out.println("Starting new scheduling task: Shortest process next");
 			
+			timer.cancel(); // making sure the timer from Round Robin isn't affecting things
 			queue = new LinkedList<Integer> ();
-			/**
-			 * Add your policy specific initialization code here (if needed)
-			 */
+
 			break;
 		case SRT:	//Shortest remaining time
 			System.out.println("Starting new scheduling task: Shortest remaining time");
@@ -154,10 +153,7 @@ public class Scheduler {
 			System.out.println("adding new process");
 			if(queue.size() < 2)
 			{
-				System.out.println("queue size " + queue.size());
 				queue.add(processID);
-				System.out.println("queue size " + queue.size());
-				System.out.println("adding " + processID);
 			}
 			// When there are two or more values we need to know the processing time (totalServiceTime)
 			else
@@ -165,33 +161,22 @@ public class Scheduler {
 				boolean added = false;
 				
 				// We go through the queue and find the appropriate location
-				System.out.println(queue.size());
-				System.out.println(added);
 				for(int i = 1; i < queue.size(); i++)
 				{
 					if(processExecution.getProcessInfo(processID).totalServiceTime < processExecution.getProcessInfo(queue.get(i)).totalServiceTime)
 					{
 						// when we find the location we squeeze the value in the place where the compared processID was in
 						// and push the previous value one back
-						System.out.println("comparing " + processID + " to " + queue.get(i));
 						queue.add(i, processID);
-						System.out.println("adding " + processID + " at " + i);
-						System.out.println("currently at " + i + " with " + queue.get(i));
 						added = true;
-						System.out.println("queue size " + queue.size());
-						System.out.println(added);
-						System.out.println("break");
 						break;
 					}
-					System.out.println("Not break.");
 				}
 				
 				// If the value wasn't added into the queue we add it to the back of it
 				if(!added)
 				{
-					System.out.println("last in queue");
 					queue.add(processID);
-					System.out.println(queue.size());
 				}
 			}
 			
@@ -222,7 +207,7 @@ public class Scheduler {
 			stk.set(stkAt, 0);
 		}
 		
-		if(this.policy.equals(policy.SPN))
+		if(this.policy.equals(Policy.SPN))
 		{
 			queue.remove();
 			if(!queue.isEmpty())
