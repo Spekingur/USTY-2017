@@ -191,9 +191,9 @@ public class Scheduler {
 		if(this.policy.equals(Policy.SRT))
 		{
 			// Since the queue is empty we can add a process to it without checking execution and service times
-			//if(queue.isEmpty())
+			if(queue.isEmpty())
 			//System.out.println(processExecution.getProcessInfo(processID).totalServiceTime);
-			if(queue.size() < 1)
+			//if(queue.size() < 1)
 			{
 				//System.out.println(queue.isEmpty());
 				queue.add(processID);
@@ -203,13 +203,9 @@ public class Scheduler {
 			//if(!queue.isEmpty())
 			else
 			{
-				//System.out.println("First element is: " + queue.element());
-				//System.out.println("processID being added: " + processID);
 				if(processExecution.getProcessInfo(processID).totalServiceTime < (processExecution.getProcessInfo(queue.element()).totalServiceTime - processExecution.getProcessInfo(queue.element()).elapsedExecutionTime))
 				{
-					//System.out.println("adding first");
 					queue.addFirst(processID);
-					//System.out.println(queue.getFirst());
 				}
 				else
 				{
@@ -230,7 +226,6 @@ public class Scheduler {
 					{
 						queue.addLast(processID);
 					}*/
-					//System.out.println("adding last");
 					//queue.add(processID);
 				}
 				processExecution.switchToProcess(queue.element());
@@ -238,13 +233,7 @@ public class Scheduler {
 				
 				// we check if the new process has a shorter service time than current processes in the queue 
 				/*for(int i = 0; i < queue.size(); i++)
-				{
-					System.out.println("Added process serviceTime: " + processExecution.getProcessInfo(processID).totalServiceTime);
-					System.out.println("Added process executionTime: " + processExecution.getProcessInfo(processID).elapsedExecutionTime);
-					//System.out.println("Queued process service minus execution: " + (processExecution.getProcessInfo(queue.get(i)).totalServiceTime - processExecution.getProcessInfo(queue.get(i)).elapsedExecutionTime));
-					System.out.println("ServiceTime for process in queue: " + processExecution.getProcessInfo(queue.get(i)).totalServiceTime);
-					System.out.println("ExecutionTime for process in queue: " + processExecution.getProcessInfo(queue.get(i)).elapsedExecutionTime);
-					
+				{					
 					// with the current processes in queue we compare the service time minus execution time with the new process service time
 					/*if(processExecution.getProcessInfo(processID).totalServiceTime < (processExecution.getProcessInfo(queue.get(i)).totalServiceTime - processExecution.getProcessInfo(queue.get(i)).elapsedExecutionTime))
 					{
@@ -312,8 +301,6 @@ public class Scheduler {
 					queue.add(1, queue.remove(nextProcessLocation));
 					System.out.println("Queue size after re-ordering: " + queue.size());
 				}
-				
-
 			}
 		}
 	}
