@@ -79,9 +79,10 @@ public class Scheduler {
 			break;
 		case HRRN:	//Highest response ratio next
 			System.out.println("Starting new scheduling task: Highest response ratio next");
-			/**
-			 * Add your policy specific initialization code here (if needed)
-			 */
+			
+			timer.cancel(); // making sure the timer from Round Robin isn't affecting things
+			queue = new LinkedList<Integer> ();
+			
 			break;
 		case FB:	//Feedback
 			System.out.println("Starting new scheduling task: Feedback, quantum = " + quantum);
@@ -262,6 +263,56 @@ public class Scheduler {
 			}
 			
 		}
+		
+		if(this.policy.equals(Policy.HRRN))
+		{
+			/*long currentProcessRatio = (processExecution.getProcessInfo(processID).elapsedWaitingTime + processExecution.getProcessInfo(processID).totalServiceTime) / processExecution.getProcessInfo(processID).totalServiceTime;
+			long anotherProcessRatio;
+			
+			if(queue.size() < 2)
+			{
+				queue.add(processID);
+			}
+			else
+			{
+				
+			}*/
+			
+			queue.add(processID);
+			
+			processExecution.switchToProcess(queue.element());
+			
+			if(queue.size() > 2)
+			{
+				int nextProcessLocation = 0;
+				double currentHighestRatio = 0.00;
+				
+				for(int i = 1; i < queue.size(); i++)
+				{
+					double tempRatio = (processExecution.getProcessInfo(queue.get(i)).elapsedWaitingTime + processExecution.getProcessInfo(queue.get(i)).totalServiceTime) / processExecution.getProcessInfo(queue.get(i)).totalServiceTime;
+					System.out.println("Queue size: " + queue.size());
+					System.out.println("Checking location " + i + " in queue: Has processID :" + queue.get(i));
+					System.out.println("currentHighestRatio: " + currentHighestRatio);
+					System.out.println("tempRatio: " + tempRatio);
+					
+					if(tempRatio > currentHighestRatio)
+					{
+						System.out.println("Checked ratios and assigning them");
+						currentHighestRatio = tempRatio;
+						nextProcessLocation = i;
+					}
+				}
+				
+				if(currentHighestRatio > 1.00)
+				{
+					System.out.println("New highest ratio, reordering queue");
+					queue.add(1, queue.remove(nextProcessLocation));
+					System.out.println("Queue size after re-ordering: " + queue.size());
+				}
+				
+
+			}
+		}
 	}
 
 	/**
@@ -294,11 +345,20 @@ public class Scheduler {
 		
 		if(this.policy.equals(Policy.SRT))
 		{
-			int removed = queue.remove();
+			queue.remove();
 			//System.out.println("removed: " + removed);
 			if(!queue.isEmpty())
 			{
 				//System.out.println("First element after removing is: " + queue.element());
+				processExecution.switchToProcess(queue.element());
+			}
+		}
+		
+		if(this.policy.equals(Policy.HRRN))
+		{
+			queue.remove();
+			if(!queue.isEmpty())
+			{
 				processExecution.switchToProcess(queue.element());
 			}
 		}
