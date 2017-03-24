@@ -72,9 +72,10 @@ public class Scheduler {
 			break;
 		case SRT:	//Shortest remaining time
 			System.out.println("Starting new scheduling task: Shortest remaining time");
-			/**
-			 * Add your policy specific initialization code here (if needed)
-			 */
+			
+			timer.cancel(); // making sure the timer from Round Robin isn't affecting things
+			queue = new LinkedList<Integer> ();
+			
 			break;
 		case HRRN:	//Highest response ratio next
 			System.out.println("Starting new scheduling task: Highest response ratio next");
@@ -150,7 +151,6 @@ public class Scheduler {
 		{
 			// It is not necessary to do anything special if the queue has less than two values since with SPN
 			// it starts with the first process received and then continues onto the next one
-			System.out.println("adding new process");
 			if(queue.size() < 2)
 			{
 				queue.add(processID);
@@ -160,7 +160,7 @@ public class Scheduler {
 			{
 				boolean added = false;
 				
-				// We go through the queue and find the appropriate location
+				// We go through the queue and find the appropriate location and we make sure we don't mess with the first value in the queue
 				for(int i = 1; i < queue.size(); i++)
 				{
 					if(processExecution.getProcessInfo(processID).totalServiceTime < processExecution.getProcessInfo(queue.get(i)).totalServiceTime)
@@ -185,6 +185,44 @@ public class Scheduler {
 			{
 				processExecution.switchToProcess(queue.element());
 			}
+		}
+		
+		if(this.policy.equals(Policy.SRT))
+		{
+			// Since the queue is empty we can add a process to it without checking execution and service times
+			if(queue.isEmpty())
+			{
+				queue.add(processID);
+			}
+			
+			if(!queue.isEmpty())
+			{
+				
+				boolean added = false;
+				
+				// we check if the new process has a shorter service time than current processes in the queue 
+				for(int i = 0; i < queue.size(); i++)
+				{
+					// with the current processes in queue we compare the service time minus execution time with the new process service time
+					if(processExecution.getProcessInfo(processID).totalServiceTime < (processExecution.getProcessInfo(queue.get(i)).totalServiceTime - processExecution.getProcessInfo(queue.get(i)).elapsedExecutionTime))
+					{
+						queue.add(i, processID);
+						added = true;
+						break;
+					}
+					
+				}
+				
+				// making sure we add to the back of the list if process wasn't added to queue in for-loop
+				if(!added)
+				{
+					queue.add(processID);
+				}
+				
+				// we start the process that is first in the queue
+				processExecution.switchToProcess(queue.element());
+			}
+			
 		}
 	}
 
@@ -216,5 +254,13 @@ public class Scheduler {
 			}
 		}
 		
+		if(this.policy.equals(Policy.SRT))
+		{
+			queue.remove();
+			if(!queue.isEmpty())
+			{
+				processExecution.switchToProcess(queue.element());
+			}
+		}
 	}
 }
