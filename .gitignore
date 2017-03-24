@@ -31,3 +31,6 @@
 # Debug files
 *.dSYM/
 *.su
+
+# Java compiled
+*.class
