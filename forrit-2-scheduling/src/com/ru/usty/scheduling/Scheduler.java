@@ -197,7 +197,8 @@ public class Scheduler {
 				queue.add(processID);
 			}
 			
-			if(!queue.isEmpty())
+			//if(!queue.isEmpty())
+			else
 			{
 				System.out.println("First element is: " + queue.element());
 				System.out.println("processID being added: " + processID);
