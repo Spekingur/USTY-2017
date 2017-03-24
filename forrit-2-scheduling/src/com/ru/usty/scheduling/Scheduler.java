@@ -209,7 +209,29 @@ public class Scheduler {
 				}
 				else
 				{
-					
+					if(queue.size() > 2)
+					{
+						boolean added = false;
+						
+						for(int i = 1; i < queue.size(); i++)
+						{
+							if(processExecution.getProcessInfo(processID).totalServiceTime < (processExecution.getProcessInfo(queue.get(i)).totalServiceTime - processExecution.getProcessInfo(queue.get(i)).elapsedExecutionTime))
+							{
+								queue.add(i, processID);
+								added = true;
+								break;
+							}
+						}
+						
+						if(!added)
+						{
+							queue.add(processID);
+						}
+					}
+					else
+					{
+						queue.add(processID);
+					}
 					//queue.addLast(processID);
 					//queue.add(1, processID);
 					//queue.add(1, processID);
