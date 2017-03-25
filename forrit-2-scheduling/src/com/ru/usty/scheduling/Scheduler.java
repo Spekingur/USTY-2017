@@ -1,7 +1,6 @@
 package com.ru.usty.scheduling;
 
 import java.util.Stack;
-import java.util.Queue;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -13,13 +12,11 @@ public class Scheduler {
 	ProcessExecution processExecution;
 	Policy policy;
 	int quantum;
-	Stack<Integer> stk = new Stack();
-	Timer timer = new Timer();
+	Stack<Integer> stk;
+	Timer timer;
 	Timer timer2 = new Timer();
 	int stkAt;
 	boolean timerSet;
-	
-	//Queue<Integer> queue;
 	LinkedList<Integer> queue;
 
 
@@ -59,7 +56,7 @@ public class Scheduler {
 	        timer = new Timer();
 			timerSet = false;
 			
-			stk = new Stack();
+			stk = new Stack<Integer>();
 			stkAt = 0;
 			
 			break;
@@ -103,7 +100,7 @@ public class Scheduler {
 	 */
 	public void processAdded(int processID) {
 		
-		if(this.policy.equals(policy.FCFS))
+		if(this.policy.equals(Policy.FCFS))
 		{
 			stk.push(processID);
 			if(!stk.empty())
@@ -112,7 +109,7 @@ public class Scheduler {
 			}
 		}
 		
-		if(this.policy.equals(policy.RR))
+		if(this.policy.equals(Policy.RR))
 		{
 			stk.push(processID);
 			if(timerSet == false)
@@ -281,6 +278,7 @@ public class Scheduler {
 		
 		if(this.policy.equals(Policy.HRRN))
 		{
+			// ATTN: There is no need to sort processes when they come in, they are at ratio 1 when they arrive
 			
 			if(queue.isEmpty())
 			{
@@ -289,53 +287,9 @@ public class Scheduler {
 			}
 			else
 			{
+				// since the queue isn't empty we don't need to start up a process (we assume there's already a process running)
 				queue.add(processID);
 			}
-			
-			/*long currentProcessRatio = (processExecution.getProcessInfo(processID).elapsedWaitingTime + processExecution.getProcessInfo(processID).totalServiceTime) / processExecution.getProcessInfo(processID).totalServiceTime;
-			long anotherProcessRatio;
-			
-			if(queue.size() < 2)
-			{
-				queue.add(processID);
-			}
-			else
-			{
-			}*/
-			
-			/*
-			queue.add(processID);
-			
-			processExecution.switchToProcess(queue.element());
-			
-			if(queue.size() > 2)
-			{
-				int nextProcessLocation = 0;
-				double currentHighestRatio = 0.00;
-				
-				for(int i = 1; i < queue.size(); i++)
-				{
-					double tempRatio = (processExecution.getProcessInfo(queue.get(i)).elapsedWaitingTime + processExecution.getProcessInfo(queue.get(i)).totalServiceTime) / processExecution.getProcessInfo(queue.get(i)).totalServiceTime;
-					System.out.println("Queue size: " + queue.size());
-					System.out.println("Checking location " + i + " in queue: Has processID :" + queue.get(i));
-					System.out.println("currentHighestRatio: " + currentHighestRatio);
-					System.out.println("tempRatio: " + tempRatio);
-					
-					if(tempRatio > currentHighestRatio)
-					{
-						System.out.println("Checked ratios and assigning them");
-						currentHighestRatio = tempRatio;
-						nextProcessLocation = i;
-					}
-				}
-				
-				if(currentHighestRatio > 1.00)
-				{
-					System.out.println("New highest ratio, reordering queue");
-					queue.add(1, queue.remove(nextProcessLocation));
-					System.out.println("Queue size after re-ordering: " + queue.size());
-				}
-			}*/
 		}
 	}
 
@@ -344,7 +298,7 @@ public class Scheduler {
 	 */
 	public void processFinished(int processID) {
 		
-		if(this.policy.equals(policy.FCFS))
+		if(this.policy.equals(Policy.FCFS))
 		{
 			stk.remove(0);
 			if(!stk.empty())
@@ -353,7 +307,7 @@ public class Scheduler {
 			}
 		}
 		
-		if(this.policy.equals(policy.RR))
+		if(this.policy.equals(Policy.RR))
 		{
 			stk.set(stkAt, 0);
 		}
