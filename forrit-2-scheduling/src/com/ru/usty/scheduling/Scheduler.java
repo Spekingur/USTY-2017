@@ -281,6 +281,17 @@ public class Scheduler {
 		
 		if(this.policy.equals(Policy.HRRN))
 		{
+			
+			if(queue.isEmpty())
+			{
+				queue.add(processID);
+				processExecution.switchToProcess(queue.element());
+			}
+			else
+			{
+				queue.add(processID);
+			}
+			
 			/*long currentProcessRatio = (processExecution.getProcessInfo(processID).elapsedWaitingTime + processExecution.getProcessInfo(processID).totalServiceTime) / processExecution.getProcessInfo(processID).totalServiceTime;
 			long anotherProcessRatio;
 			
@@ -290,9 +301,9 @@ public class Scheduler {
 			}
 			else
 			{
-				
 			}*/
 			
+			/*
 			queue.add(processID);
 			
 			processExecution.switchToProcess(queue.element());
@@ -324,7 +335,7 @@ public class Scheduler {
 					queue.add(1, queue.remove(nextProcessLocation));
 					System.out.println("Queue size after re-ordering: " + queue.size());
 				}
-			}
+			}*/
 		}
 	}
 
@@ -372,6 +383,18 @@ public class Scheduler {
 			queue.remove();
 			if(!queue.isEmpty())
 			{
+				if(queue.size() > 1)
+				{
+					for(int i = 0; i < queue.size(); i++)
+					{
+						double tempRatio = (processExecution.getProcessInfo(queue.get(i)).elapsedWaitingTime + processExecution.getProcessInfo(queue.get(i)).totalServiceTime) / processExecution.getProcessInfo(queue.get(i)).totalServiceTime;
+						if(tempRatio > 1)
+						{
+							System.out.println("processID at location " + i + " in queue moved to front with ratio of " + tempRatio);
+							queue.add(0, queue.remove(i));
+						}
+					}
+				}
 				processExecution.switchToProcess(queue.element());
 			}
 		}
