@@ -63,21 +63,18 @@ public class Scheduler {
 		case SPN:	//Shortest process next
 			System.out.println("Starting new scheduling task: Shortest process next");
 			
-			timer.cancel(); // making sure the timer from Round Robin isn't affecting things
 			queue = new LinkedList<Integer> ();
 
 			break;
 		case SRT:	//Shortest remaining time
 			System.out.println("Starting new scheduling task: Shortest remaining time");
 			
-			//timer.cancel(); // making sure the timer from Round Robin isn't affecting things
 			queue = new LinkedList<Integer> ();
 			
 			break;
 		case HRRN:	//Highest response ratio next
 			System.out.println("Starting new scheduling task: Highest response ratio next");
 			
-			//timer.cancel(); // making sure the timer from Round Robin isn't affecting things
 			queue = new LinkedList<Integer> ();
 			
 			break;
