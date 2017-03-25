@@ -210,7 +210,7 @@ public class Scheduler {
 				{
 					// if the process hasn't got a better service time than the one currently running we need to find out where to put it
 					// we check if the queue has more than one value, if not we add it to the back of the queue
-					// else we iterate through the queue and place the new one at an appropriate location in it
+					// if it does have more than one value we iterate through the queue and place the new one at an appropriate location in it
 					if(queue.size() > 1)
 					{
 						boolean added = false;
