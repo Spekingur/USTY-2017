@@ -18,6 +18,8 @@ public class Scheduler {
 	int stkAt;
 	boolean timerSet;
 	LinkedList<Integer> queue;
+	
+	boolean processRunning;
 
 
 
@@ -68,6 +70,7 @@ public class Scheduler {
 			
 			timer.cancel();
 			queue = new LinkedList<Integer> ();
+			processRunning = false;
 
 			break;
 		case SRT:	//Shortest remaining time
@@ -180,9 +183,10 @@ public class Scheduler {
 			}
 			
 			// The queue always starts on the first element in the list
-			if(!queue.isEmpty())
+			if(!queue.isEmpty() && !processRunning)
 			{
 				processExecution.switchToProcess(queue.element());
+				processRunning = true;
 			}
 		}
 		
@@ -278,6 +282,7 @@ public class Scheduler {
 		if(this.policy.equals(Policy.SPN))
 		{
 			queue.remove();
+			processRunning = false;
 			if(!queue.isEmpty())
 			{
 				processExecution.switchToProcess(queue.element());
