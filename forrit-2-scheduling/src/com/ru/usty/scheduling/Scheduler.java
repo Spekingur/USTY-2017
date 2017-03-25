@@ -2,6 +2,7 @@ package com.ru.usty.scheduling;
 
 import java.util.Stack;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,11 +15,12 @@ public class Scheduler {
 	int quantum;
 	Stack<Integer> stk;
 	Timer timer = new Timer();
-	Timer timer2 = new Timer();
-	int stkAt;
+	int indexAt;
 	boolean timerSet;
 	LinkedList<Integer> queue;
-	
+	Queue<Integer>[] queues = new Queue[7];
+
+
 	boolean processRunning;
 
 
@@ -62,7 +64,7 @@ public class Scheduler {
 			timerSet = false;
 			
 			stk = new Stack<Integer>();
-			stkAt = 0;
+			indexAt = 0;
 			
 			break;
 		case SPN:	//Shortest process next
@@ -87,9 +89,12 @@ public class Scheduler {
 			break;
 		case FB:	//Feedback
 			System.out.println("Starting new scheduling task: Feedback, quantum = " + quantum);
-			/**
-			 * Add your policy specific initialization code here (if needed)
-			 */
+			indexAt = 0;
+			for (int i = 0; i < 7; i++)
+			{
+			   queues[i] = new LinkedList<Integer>();
+			}
+			
 			break;
 		}
 
@@ -122,30 +127,29 @@ public class Scheduler {
 				timer.scheduleAtFixedRate(new TimerTask() {
 					@Override
 					public void run() {
-						if(stkAt+1 >= stk.size())
-							stkAt = 0;
-						else if(stk.elementAt(stkAt) == 0)
+						if(indexAt+1 >= stk.size())
+							indexAt = 0;
+						else if(stk.elementAt(indexAt) == 0)
 						{
-						 while(stk.elementAt(stkAt) == 0)
+						 while(stk.elementAt(indexAt) == 0)
 							{
 								if(stk.size() == 0)
 									break;
-								else if(stkAt+1 >= stk.size())
+								else if(indexAt+1 >= stk.size())
 								{
-									stkAt = 0;
+									indexAt = 0;
 									break;
 								}
 								else
-									stkAt++;	
+									indexAt++;
 							}
 						}
 						else
-							stkAt++;
+							indexAt++;
 						
-					processExecution.switchToProcess(stk.indexOf(stkAt));
+					processExecution.switchToProcess(stk.indexOf(indexAt));
 					}
 				}, 230, quantum);
-				
 			}
 		}
 		
@@ -258,6 +262,43 @@ public class Scheduler {
 				queue.add(processID);
 			}
 		}
+		
+		if(this.policy.equals(Policy.FB))
+		{
+			queues[0].add(processID);
+			if(timerSet == false)
+			{
+				timerSet = true;
+				timer.scheduleAtFixedRate(new TimerTask() {
+					@Override
+					public void run() {
+								if(!queues[indexAt].isEmpty())
+								{
+									processExecution.switchToProcess(queues[indexAt].element());
+									queues[indexAt+1].add(queues[indexAt].remove());
+									System.out.println("Queue: " + indexAt + " is not empty!");		
+								}
+								else if(indexAt < 7)
+								{
+									if(!queues[0].isEmpty())
+										indexAt = 0;
+									else
+										indexAt++;
+									
+									System.out.println("Index is at: " + indexAt);									
+								}
+								else
+								{
+									indexAt = 0;
+									System.out.println("Index going to 0");
+								}
+								
+						
+					}
+				}, quantum, quantum);
+				
+			}
+		}
 	}
 
 	/**
@@ -276,7 +317,7 @@ public class Scheduler {
 		
 		if(this.policy.equals(Policy.RR))
 		{
-			stk.set(stkAt, 0);
+			stk.set(indexAt, 0);
 		}
 		
 		if(this.policy.equals(Policy.SPN))
@@ -323,6 +364,13 @@ public class Scheduler {
 				}
 				processExecution.switchToProcess(queue.element());
 			}
+		}
+		
+		if(this.policy.equals(Policy.FB))
+		{
+			//queues[indexAt].remove();
+			indexAt = 0;
+			processExecution.switchToProcess(queues[0].element());
 		}
 	}
 }
