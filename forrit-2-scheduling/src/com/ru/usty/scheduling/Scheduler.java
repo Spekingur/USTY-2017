@@ -385,12 +385,15 @@ public class Scheduler {
 			{
 				if(queue.size() > 1)
 				{
+					double highestRatioFound = 1.0;
+					
 					for(int i = 0; i < queue.size(); i++)
 					{
 						double tempRatio = (processExecution.getProcessInfo(queue.get(i)).elapsedWaitingTime + processExecution.getProcessInfo(queue.get(i)).totalServiceTime) / processExecution.getProcessInfo(queue.get(i)).totalServiceTime;
-						if(tempRatio > 1)
+						if(tempRatio > highestRatioFound)
 						{
-							System.out.println("processID at location " + i + " in queue moved to front with ratio of " + tempRatio);
+							highestRatioFound = tempRatio;
+							//System.out.println("processID " + queue.element() + " at location " + i + " in queue moved to front with ratio of " + tempRatio + " with waiting time of " + processExecution.getProcessInfo(queue.get(i)).elapsedWaitingTime);
 							queue.add(0, queue.remove(i));
 						}
 					}
