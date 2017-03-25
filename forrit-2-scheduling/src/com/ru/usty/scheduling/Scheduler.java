@@ -274,6 +274,9 @@ public class Scheduler {
 					public void run() {
 								if(!queues[indexAt].isEmpty())
 								{
+									if(!queues[0].isEmpty())
+										indexAt = 0;
+									
 									processExecution.switchToProcess(queues[indexAt].element());
 									queues[indexAt+1].add(queues[indexAt].remove());
 									System.out.println("Queue: " + indexAt + " is not empty!");		
@@ -282,8 +285,8 @@ public class Scheduler {
 								{
 									if(!queues[0].isEmpty())
 										indexAt = 0;
-									else
-										indexAt++;
+									
+									indexAt++;
 									
 									System.out.println("Index is at: " + indexAt);									
 								}
@@ -368,9 +371,7 @@ public class Scheduler {
 		
 		if(this.policy.equals(Policy.FB))
 		{
-			//queues[indexAt].remove();
 			indexAt = 0;
-			processExecution.switchToProcess(queues[0].element());
 		}
 	}
 }
