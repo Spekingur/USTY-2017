@@ -77,7 +77,7 @@ public class Scheduler {
 		case HRRN:	//Highest response ratio next
 			System.out.println("Starting new scheduling task: Highest response ratio next");
 			
-			timer.cancel(); // making sure the timer from Round Robin isn't affecting things
+			//timer.cancel(); // making sure the timer from Round Robin isn't affecting things
 			queue = new LinkedList<Integer> ();
 			
 			break;
@@ -295,10 +295,14 @@ public class Scheduler {
 		if(this.policy.equals(Policy.HRRN))
 		{
 			queue.remove();
+			
+			// after finishing and removing the previously running process we want to find the next one to run
+			// we find that by finding how long a process has been waiting to start and the expected running time
 			if(!queue.isEmpty())
 			{
 				if(queue.size() > 1)
 				{
+					// because every new process added starts with 1 in ratio
 					double highestRatioFound = 1.0;
 					
 					for(int i = 0; i < queue.size(); i++)
@@ -307,7 +311,7 @@ public class Scheduler {
 						if(tempRatio > highestRatioFound)
 						{
 							highestRatioFound = tempRatio;
-							queue.add(0, queue.remove(i));
+							queue.add(0, queue.remove(i)); // we do it like this so we both add to the front and remove the process from its previous place in the queue
 						}
 					}
 				}
