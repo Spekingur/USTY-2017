@@ -13,7 +13,7 @@ public class Scheduler {
 	Policy policy;
 	int quantum;
 	Stack<Integer> stk;
-	Timer timer;
+	Timer timer = new Timer();
 	Timer timer2 = new Timer();
 	int stkAt;
 	boolean timerSet;
@@ -47,7 +47,10 @@ public class Scheduler {
 		switch(policy) {
 		case FCFS:	//First-come-first-served
 			System.out.println("Starting new scheduling task: First-come-first-served");
-				
+			
+			timer.cancel();
+			stk = new Stack<Integer> ();
+			
 			break;
 		case RR:	//Round robin
 			System.out.println("Starting new scheduling task: Round robin, quantum = " + quantum);
@@ -63,6 +66,7 @@ public class Scheduler {
 		case SPN:	//Shortest process next
 			System.out.println("Starting new scheduling task: Shortest process next");
 			
+			timer.cancel();
 			queue = new LinkedList<Integer> ();
 
 			break;
