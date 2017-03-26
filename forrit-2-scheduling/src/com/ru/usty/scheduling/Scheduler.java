@@ -278,8 +278,11 @@ public class Scheduler {
 										indexAt = 0;
 									
 									processExecution.switchToProcess(queues[indexAt].element());
-									queues[indexAt+1].add(queues[indexAt].remove());
-									System.out.println("Queue: " + indexAt + " is not empty!");		
+									if(indexAt < 6)
+									{
+										queues[indexAt+1].add(queues[indexAt].remove());
+										System.out.println("Queue: " + indexAt + " is not empty!");	
+									}	
 								}
 								else if(indexAt < 7)
 								{
@@ -393,8 +396,12 @@ public class Scheduler {
 									indexAt = 0;
 								
 								processExecution.switchToProcess(queues[indexAt].element());
-								queues[indexAt+1].add(queues[indexAt].remove());
-								System.out.println("Queue: " + indexAt + " is not empty!");		
+								if(indexAt < 6)
+								{
+									queues[indexAt+1].add(queues[indexAt].remove());
+									System.out.println("Queue: " + indexAt + " is not empty!");	
+								}
+	
 							}
 							else if(indexAt < 7)
 							{
