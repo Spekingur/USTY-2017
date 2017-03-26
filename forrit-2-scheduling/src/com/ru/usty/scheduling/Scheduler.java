@@ -54,6 +54,7 @@ public class Scheduler {
 			
 			timer.cancel();
 			stk = new Stack<Integer> ();
+			processRunning = false;
 			
 			break;
 		case RR:	//Round robin
@@ -112,9 +113,11 @@ public class Scheduler {
 		if(this.policy.equals(Policy.FCFS))
 		{
 			stk.push(processID);
-			if(!stk.empty())
+			if(!stk.empty() && !processRunning)
 			{
+				System.out.println("Time processID " + stk.elementAt(0) + " had to wait: " + processExecution.getProcessInfo(stk.elementAt(0)).elapsedWaitingTime + " ms");
 				processExecution.switchToProcess(stk.elementAt(0));
+				processRunning = true;
 			}
 		}
 		
@@ -315,15 +318,19 @@ public class Scheduler {
 		if(this.policy.equals(Policy.FCFS))
 		{
 			stk.remove(0);
+			processRunning = false;
 			if(!stk.empty())
 			{
+				System.out.println("Time processID " + stk.elementAt(0) + " had to wait: " + processExecution.getProcessInfo(stk.elementAt(0)).elapsedWaitingTime + " ms");
 				processExecution.switchToProcess(stk.elementAt(0));
+				processRunning = true;
 			}
 		}
 		
 		if(this.policy.equals(Policy.RR))
 		{
 			stk.set(indexAt, 0);
+			System.out.println("Time process had to wait: " + processExecution.getProcessInfo(stk.elementAt(0)).elapsedWaitingTime);
 		}
 		
 		if(this.policy.equals(Policy.SPN))
