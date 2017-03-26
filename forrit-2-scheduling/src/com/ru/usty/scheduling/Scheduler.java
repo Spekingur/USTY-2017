@@ -285,9 +285,9 @@ public class Scheduler {
 								{
 									if(!queues[0].isEmpty())
 										indexAt = 0;
-									
-									indexAt++;
-									
+									else
+										indexAt++;
+
 									System.out.println("Index is at: " + indexAt);									
 								}
 								else
@@ -371,7 +371,49 @@ public class Scheduler {
 		
 		if(this.policy.equals(Policy.FB))
 		{
+			
+			timer.cancel();
+			timer = new Timer();
+			//int x = queues[indexAt+1].remove();
+			
+			for (int i = 0; i < 7; i++)
+			{
+				queues[i].remove(processID);
+				System.out.println("Removed: " + processID);	
+			}
 			indexAt = 0;
+
+			timer.scheduleAtFixedRate(new TimerTask() {
+				@Override
+				public void run() {
+							if(!queues[indexAt].isEmpty())
+							{
+								if(!queues[0].isEmpty())
+									indexAt = 0;
+								
+								processExecution.switchToProcess(queues[indexAt].element());
+								queues[indexAt+1].add(queues[indexAt].remove());
+								System.out.println("Queue: " + indexAt + " is not empty!");		
+							}
+							else if(indexAt < 7)
+							{
+								if(!queues[0].isEmpty())
+									indexAt = 0;
+								else
+									indexAt++;
+
+								System.out.println("Index is at: " + indexAt);									
+							}
+							else
+							{
+								indexAt = 0;
+								System.out.println("Index going to 0");
+							}
+							
+					
+				}
+			}, quantum, quantum);
+			
 		}
 	}
 }
