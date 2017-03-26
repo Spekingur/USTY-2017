@@ -330,6 +330,7 @@ public class Scheduler {
 			if(!queue.isEmpty())
 			{
 				processExecution.switchToProcess(queue.element());
+				processRunning = true;
 			}
 		}
 		
